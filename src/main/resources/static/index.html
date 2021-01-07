@@ -29,40 +29,36 @@
         </div>
 
         <p>
-            <button type="submit">Order and Pay</button>
+            <button type="submit">Order</button>
         </p>
     </form>
 </div>
 
 <div id="payment_div" style='display:none;'>
-    <h1>PAY <div id="pay_amount"> </div>
-        <div id="order_id"> </div>
-    </h1>
+
+    <p>
+    <div>PAY </div> Amount : <div id="pay_amount"> </div> for razorpay order id : <div id="order_id"> </div>
+    </p>
+
+
+
+
     <button id="rzp-button1"> Pay </button>
 </div>
 
 <div id="results"></div>
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script>
-        /* attach a submit handler to the form */
         $("#form").submit(function (event) {
 
-            /* stop form from submitting normally */
+
             event.preventDefault();
 
-            /* get the action attribute from the <form action=""> element */
+
             var $form = $(this),
                 url = $form.attr('action');
 
-            /* Send the data using post with element id name and name2*/
 
-            /*
-            var posting = $.post(url, {
-                transactionId: $('#transactionId').val(),
-                orderDetails: $('#orderDetails').val(),
-                amount: $('#amount').val()
-            });
-            */
 
             var orderData = {
                 transactionId: $('#transactionId').val(),
@@ -134,8 +130,7 @@
                     }
 
 
-                    //alert("You will now be redirected to payment page");
-                    // window.location = "checkout.html";
+
                 },
                 failure: function (response) {
                     alert(response.d);
