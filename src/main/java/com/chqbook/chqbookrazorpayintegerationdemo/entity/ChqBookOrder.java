@@ -14,7 +14,7 @@ public class ChqBookOrder {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Column(name = "user")
+    @Column(name = "`user`")
     private String user;
 
     @Column(name = "created_at")
