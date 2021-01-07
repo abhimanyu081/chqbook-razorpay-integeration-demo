@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Create Order Form</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+</head>
+
+<body>
+
+
+<div id="order_div">
+    <h1>Enter order details</h1>
+    <form id="form" action="orders">
+        <div>
+            <label for="transactionId">transaction id</label>
+            <input id="transactionId" name="transactionId" />
+        </div>
+        <div>
+            <label for="orderDetails">orderDetails</label>
+            <input id="orderDetails" name="orderDetails" />
+        </div>
+
+        <div>
+            <label for="amount">amount</label>
+            <input id="amount" name="amount" />
+        </div>
+
+        <p>
+            <button type="submit">Order and Pay</button>
+        </p>
+    </form>
+</div>
+
+<div id="payment_div" style='display:none;'>
+    <h1>PAY <div id="pay_amount"> </div>
+        <div id="order_id"> </div>
+    </h1>
+    <button id="rzp-button1"> Pay </button>
+</div>
+
+<div id="results"></div>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+        /* attach a submit handler to the form */
+        $("#form").submit(function (event) {
+
+            /* stop form from submitting normally */
+            event.preventDefault();
+
+            /* get the action attribute from the <form action=""> element */
+            var $form = $(this),
+                url = $form.attr('action');
+
+            /* Send the data using post with element id name and name2*/
+
+            /*
+            var posting = $.post(url, {
+                transactionId: $('#transactionId').val(),
+                orderDetails: $('#orderDetails').val(),
+                amount: $('#amount').val()
+            });
+            */
+
+            var orderData = {
+                transactionId: $('#transactionId').val(),
+                orderDetails: $('#orderDetails').val(),
+                amount: $('#amount').val()
+            };
+
+            var orderId = '';
+            var amount = '';
+
+            $.ajax({
+                type: "POST",
+                url: "orders",
+                data: JSON.stringify(orderData),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (response) {
+                    console.log(response.user);
+                    orderId = response.razorPayOrderId;
+                    amount = response.chqBookOrderPayment.amount;
+
+                    document.getElementById("order_id").innerText = response.razorPayOrderId;
+                    document.getElementById("pay_amount").innerText = response.chqBookOrderPayment
+                        .amount;
+
+
+                    document.getElementById("order_div").style.display = "none";
+                    document.getElementById("payment_div").style.display = "block";
+
+                    var options = {
+                        "key": "rzp_test_9h8lo5mUCYrEKr",
+                        "amount": amount,
+                        "currency": "INR",
+                        "name": "Chqbook order",
+                        "description": "Test Transaction",
+                        "image": "https://example.com/your_logo",
+                        "order_id": orderId,
+                        "handler": function (response) {
+                            alert(response.razorpay_payment_id);
+                            alert(response.razorpay_order_id);
+                            alert(response.razorpay_signature)
+                        },
+                        "prefill": {
+                            "name": "Gaurav Kumar",
+                            "email": "gaurav.kumar@example.com",
+                            "contact": "9999999999"
+                        },
+                        "notes": {
+                            "address": "Razorpay Corporate Office"
+                        },
+                        "theme": {
+                            "color": "#3399cc"
+                        }
+                    };
+
+                    var rzp1 = new Razorpay(options);
+                    rzp1.on('payment.failed', function (response) {
+                        alert(response.error.code);
+                        alert(response.error.description);
+                        alert(response.error.source);
+                        alert(response.error.step);
+                        alert(response.error.reason);
+                        alert(response.error.metadata.order_id);
+                        alert(response.error.metadata.payment_id);
+                    });
+                    document.getElementById('rzp-button1').onclick = function (e) {
+                        rzp1.open();
+                        e.preventDefault();
+                    }
+
+
+                    //alert("You will now be redirected to payment page");
+                    // window.location = "checkout.html";
+                },
+                failure: function (response) {
+                    alert(response.d);
+                }
+            });
+
+            console.log('orderId : ' + orderId);
+            console.log('amount : ' + amount);
+
+            /* Alerts the results
+            posting.done(function (data) {
+                $('#result').text('success : ' + data);
+            });
+            posting.fail(function () {
+                $('#result').text('failed');
+            });
+
+            */
+        });
+    </script>
+
+</body>
+
+</html>

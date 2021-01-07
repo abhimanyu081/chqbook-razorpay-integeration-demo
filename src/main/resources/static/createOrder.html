@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Create Order Form</title>
+
+</head>
+<body>
+<h1>Enter order details</h1>
+<form id="myForm">
+    <div>
+        <label for="transactionId">transaction id</label>
+        <input name="transactionId" id="transactionId" value="1234">
+    </div>
+    <div>
+        <label for="orderDetails">orderDetails</label>
+        <input name="orderDetails" id="orderDetails" value="test order 1">
+    </div>
+
+    <div>
+        <label for="amount">amount</label>
+        <input name="amount" id="amount" value="1000">
+    </div>
+
+    <div>
+        <input id="postSubmit" type="submit" value="Create">
+    </div>
+</form>
+
+<script >
+
+    const thisForm = document.getElementById('myForm');
+thisForm.addEventListener('submit', async function (e) {
+    e.preventDefault();
+    const formData = new FormData(thisForm).entries()
+    const response = await fetch('orders', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(Object.fromEntries(formData))
+    });
+
+    const result = await response.json();
+    console.log(result)
+});
+
+</script>
+
+</body>
+</html>
