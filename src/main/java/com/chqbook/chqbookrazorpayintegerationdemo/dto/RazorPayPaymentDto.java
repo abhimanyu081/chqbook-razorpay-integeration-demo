@@ -5,6 +5,15 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
+/****
+ *
+ * @author - Abhimanyu
+ * Generated from
+ * http://www.jsonschema2pojo.org/
+ *
+ * output from razorpay payment
+ *
+ */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
         "id",
