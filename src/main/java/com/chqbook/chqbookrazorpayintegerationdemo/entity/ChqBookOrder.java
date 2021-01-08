@@ -1,10 +1,19 @@
 package com.chqbook.chqbookrazorpayintegerationdemo.entity;
 
-import com.chqbook.chqbookrazorpayintegerationdemo.constants.OrderStatus;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
+
+/****
+ *
+ * @author - Abhimanyu
+ *
+ * This class represents the order table
+ *
+ */
 
 @Entity
 @Table(name = "orders")
@@ -17,17 +26,22 @@ public class ChqBookOrder {
     @Column(name = "`user`")
     private String user;
 
+    @Column(name = "transaction_id")
+    private String transactionId;
+
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
     @Column(name = "details")
     private String orderDetails;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "payment_id", referencedColumnName = "id")
-    private ChqBookOrderPayment chqBookOrderPayment;
+    @Column(name = "order_amount")
+    private Integer orderAmount;
 
-    @Column(name="razorpay_order_id")
+    @OneToMany(mappedBy = "chqBookOrder")
+    private Set<ChqBookOrderPayment> chqBookOrderPaymentSet = new HashSet<>();
+
+    @Column(name = "razorpay_order_id")
     private String razorPayOrderId;
 
     public String getRazorPayOrderId() {
@@ -72,11 +86,35 @@ public class ChqBookOrder {
         this.orderDetails = orderDetails;
     }
 
-    public ChqBookOrderPayment getChqBookOrderPayment() {
-        return chqBookOrderPayment;
+    public Set<ChqBookOrderPayment> getChqBookOrderPaymentSet() {
+        return chqBookOrderPaymentSet;
     }
 
-    public void setChqBookOrderPayment(ChqBookOrderPayment chqBookOrderPayment) {
-        this.chqBookOrderPayment = chqBookOrderPayment;
+    public void setChqBookOrderPaymentSet(Set<ChqBookOrderPayment> chqBookOrderPaymentSet) {
+        this.chqBookOrderPaymentSet = chqBookOrderPaymentSet;
+    }
+
+    public void addPayment(ChqBookOrderPayment chqBookOrderPayment) {
+
+        if (chqBookOrderPaymentSet == null) {
+            chqBookOrderPaymentSet = new HashSet<>();
+        }
+        chqBookOrderPaymentSet.add(chqBookOrderPayment);
+    }
+
+    public Integer getOrderAmount() {
+        return orderAmount;
+    }
+
+    public void setOrderAmount(Integer orderAmount) {
+        this.orderAmount = orderAmount;
+    }
+
+    public String getTransactionId() {
+        return transactionId;
+    }
+
+    public void setTransactionId(String transactionId) {
+        this.transactionId = transactionId;
     }
 }

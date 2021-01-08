@@ -6,4 +6,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ChqBookOrderRepository extends JpaRepository<ChqBookOrder,Long> {
+
+    public ChqBookOrder findByRazorPayOrderId(String razorPayOrderId);
 }

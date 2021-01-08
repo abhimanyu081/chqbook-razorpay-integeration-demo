@@ -23,9 +23,20 @@ public class ChqBookOrderPayment {
     private Integer amount;
 
     @JsonIgnore
-    @OneToOne(mappedBy = "chqBookOrderPayment")
+    @ManyToOne
+    @JoinColumn(name="chqbook_order_id", nullable=false)
     private ChqBookOrder chqBookOrder;
 
+    @Column(name="razorpay_payment_id")
+    private String razorPayPaymentId;
+
+    public String getRazorPayPaymentId() {
+        return razorPayPaymentId;
+    }
+
+    public void setRazorPayPaymentId(String razorPayPaymentId) {
+        this.razorPayPaymentId = razorPayPaymentId;
+    }
 
     public Long getId() {
         return id;

@@ -27,6 +27,10 @@
             <label for="amount">amount</label>
             <input id="amount" name="amount" />
         </div>
+        <div>
+            <label for="receipt">receipt</label>
+            <input id="receipt" name="receipt" />
+        </div>
 
         <p>
             <button type="submit">Order</button>
@@ -51,23 +55,15 @@
 <script>
         $("#form").submit(function (event) {
 
-
             event.preventDefault();
 
-
-            var $form = $(this),
-                url = $form.attr('action');
-
-
-
             var orderData = {
-                transactionId: $('#transactionId').val(),
-                orderDetails: $('#orderDetails').val(),
-                amount: $('#amount').val()
+                transaction_id: $('#transactionId').val(),
+                order_details: $('#orderDetails').val(),
+                amount: $('#amount').val(),
+                receipt: $('#receipt').val()
             };
 
-            var orderId = '';
-            var amount = '';
 
             $.ajax({
                 type: "POST",
@@ -76,13 +72,12 @@
                 contentType: "application/json; charset=utf-8",
                 dataType: "json",
                 success: function (response) {
-                    console.log(response.user);
-                    orderId = response.razorPayOrderId;
-                    amount = response.chqBookOrderPayment.amount;
 
-                    document.getElementById("order_id").innerText = response.razorPayOrderId;
-                    document.getElementById("pay_amount").innerText = response.chqBookOrderPayment
-                        .amount;
+                    var orderId = response.razorPayOrderId;
+                    var amount = response.orderAmount;
+
+                    document.getElementById("order_id").innerText = orderId;
+                    document.getElementById("pay_amount").innerText = amount;
 
 
                     document.getElementById("order_div").style.display = "none";
@@ -97,9 +92,12 @@
                         "image": "https://example.com/your_logo",
                         "order_id": orderId,
                         "handler": function (response) {
-                            alert(response.razorpay_payment_id);
-                            alert(response.razorpay_order_id);
-                            alert(response.razorpay_signature)
+                           // alert(response.razorpay_payment_id);
+                           // alert(response.razorpay_order_id);
+                           // alert(response.razorpay_signature);
+
+                            updatePaymentStatus(response.razorpay_payment_id, response
+                                .razorpay_order_id, response.razorpay_signature);
                         },
                         "prefill": {
                             "name": "Gaurav Kumar",
@@ -137,19 +135,32 @@
                 }
             });
 
-            console.log('orderId : ' + orderId);
-            console.log('amount : ' + amount);
 
-            /* Alerts the results
-            posting.done(function (data) {
-                $('#result').text('success : ' + data);
-            });
-            posting.fail(function () {
-                $('#result').text('failed');
-            });
-
-            */
         });
+
+
+        function updatePaymentStatus(razorpay_payment_id, razorpay_order_id, razorpay_signature) {
+
+            console.log(razorpay_payment_id);
+            console.log(razorpay_order_id);
+            console.log(razorpay_signature);
+
+            var url = "orders/" + razorpay_order_id + "/" + "payment" + "/" + razorpay_payment_id;
+
+            $.ajax({
+                type: "PUT",
+                url: url,
+                success: function (response) {
+                    location.href = "payment_success.html";
+                    //alert(response);
+                },
+                failure: function (response) {
+                    alert(response.d);
+                }
+
+            })
+
+        }
     </script>
 
 </body>

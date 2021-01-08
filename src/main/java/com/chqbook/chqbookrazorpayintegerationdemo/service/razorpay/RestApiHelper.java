@@ -1,24 +1,14 @@
-package com.chqbook.chqbookrazorpayintegerationdemo.service;
+package com.chqbook.chqbookrazorpayintegerationdemo.service.razorpay;
 
-import com.chqbook.chqbookrazorpayintegerationdemo.dto.RazorPayOrderDto;
 import org.apache.tomcat.util.codec.binary.Base64;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponentsBuilder;
 
-
-@Service
-public class RazorPayOrderServiceImpl implements RazorPayOrderService {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(RazorPayOrderServiceImpl.class);
+@Component
+public class RestApiHelper {
 
     @Value("${RAZORPAY_BASE_URL}")
     private String baseUrl;
@@ -27,15 +17,17 @@ public class RazorPayOrderServiceImpl implements RazorPayOrderService {
     private String apiKey;
 
     @Value("${RAZORPAY_API_KEY_SECRET}")
-    private  String apiKeySecret;
+    private String apiKeySecret;
 
     private RestTemplate restTemplate;
 
-
     @Autowired
-    public RazorPayOrderServiceImpl(RestTemplate restTemplate) {
+    public RestApiHelper(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
+    }
 
+    public RestTemplate getRestTemplate() {
+        return restTemplate;
     }
 
     public static HttpHeaders getHeaders(String userName, String password) {
@@ -46,26 +38,8 @@ public class RazorPayOrderServiceImpl implements RazorPayOrderService {
 
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "Basic " + base64Creds);
-        // headers.add("X-Shopify-Access-Token", "55bfd0cabc651f2b64d20a974d8aab36");
         return headers;
     }
-
-    @Override
-    public RazorPayOrderDto create(RazorPayOrderDto razorPayOrderDto) {
-        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(getBaseUrl() + "orders");
-
-        HttpEntity<RazorPayOrderDto> request = new HttpEntity<RazorPayOrderDto>(razorPayOrderDto,getHeaders(
-                getApiKey(), getApiKeySecret()));
-
-        RazorPayOrderDto apiResponse = restTemplate.postForObject(builder.toUriString(),
-                request, RazorPayOrderDto.class);
-
-
-        LOGGER.info(apiResponse.toString());
-        return apiResponse;
-    }
-
-
 
     public String getBaseUrl() {
         return baseUrl;
@@ -90,4 +64,5 @@ public class RazorPayOrderServiceImpl implements RazorPayOrderService {
     public void setApiKeySecret(String apiKeySecret) {
         this.apiKeySecret = apiKeySecret;
     }
+
 }

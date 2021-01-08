@@ -23,7 +23,7 @@ public class RestTemplateConfig {
         RestTemplate restTemplate = new RestTemplate();
 
         //to convert camel case dto to SNAKE CASE json string to post
-        restTemplate.getMessageConverters().add(0, createMappingJacksonHttpMessageConverter());
+        // restTemplate.getMessageConverters().add(0, createMappingJacksonHttpMessageConverter());
 
         //restTemplate.getMessageConverters().add(createMappingJacksonHttpMessageConverter());
 
@@ -43,6 +43,7 @@ public class RestTemplateConfig {
         return restTemplate;
     }
 
+/*
     private MappingJackson2HttpMessageConverter createMappingJacksonHttpMessageConverter() {
         MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
         converter.setObjectMapper(createObjectMapper());
@@ -57,6 +58,7 @@ public class RestTemplateConfig {
         objectMapper.setPropertyNamingStrategy(PropertyNamingStrategy.SNAKE_CASE);
         return objectMapper;
     }
+*/
 
 
 }
